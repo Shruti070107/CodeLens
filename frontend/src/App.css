@@ -1,0 +1,97 @@
+* {
+  margin: 0%;
+  padding: 0%;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+main {
+  height: 100%;
+  width: 100%;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+main .left,
+main .right {
+  height: 100%;
+  flex-basis: 50%;
+  border-radius: 0.7rem;
+}
+
+main .left {
+  background-color: #000000;
+  position: relative;
+}
+
+.left .code,
+.code pre,
+.code pre code {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  border-radius: 0.7rem;
+  background-color: #0c0c0c;
+}
+
+main .left .review {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: rgb(219, 219, 255);
+  color: #000000;
+  padding: 0.5rem 2rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 0.7rem;
+}
+
+
+main .right {
+  background-color: #18181b;
+  color: #f4f4f5;
+  padding: 1.5rem 2rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  overflow: auto;
+  border: 1px solid #27272a;
+}
+
+main .right h1,
+main .right h2,
+main .right h3,
+main .right h4 {
+  color: #fafafa;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+main .right p,
+main .right li {
+  color: #e4e4e7;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+main .right pre {
+  background-color: #09090b !important;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  border: 1px solid #27272a;
+}
+
+main .right code {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+}
