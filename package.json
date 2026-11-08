@@ -1,0 +1,24 @@
+{
+  "name": "codelens",
+  "version": "1.0.0",
+  "description": "CodeLens - AI-Powered Senior Code Reviewer",
+  "private": true,
+  "scripts": {
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "backend": "npm --prefix backend start",
+    "backend:dev": "npm --prefix backend run dev",
+    "frontend": "npm --prefix frontend run dev",
+    "frontend:build": "npm --prefix frontend run build",
+    "frontend:lint": "npm --prefix frontend run lint"
+  },
+  "keywords": [
+    "ai",
+    "code-review",
+    "gemini",
+    "react",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC"
+}
+
