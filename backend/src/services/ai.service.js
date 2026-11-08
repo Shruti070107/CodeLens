@@ -1,9 +1,14 @@
+const path = require('path');
+const dotenv = require('dotenv');
+
+dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
+dotenv.config({ path: path.resolve(__dirname, '..', '..', '..', '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), 'backend', '.env') });
+
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_KEY);
-const model = genAI.getGenerativeModel({
-    model: "gemini-3.6-flash",
-    systemInstruction: `
+const systemInstruction = `
                 Here’s a solid system instruction for your AI code reviewer:
 
                 AI System Instruction: Senior Code Reviewer (7+ Years of Experience)
@@ -57,7 +62,7 @@ const model = genAI.getGenerativeModel({
                 async function fetchData() {
                     try {
                         const response = await fetch('/api/data');
-                        if (!response.ok) throw new Error("HTTP error! Status: $\{response.status}");
+                        if (!response.ok) throw new Error("HTTP error! Status: \${response.status}");
                         return await response.json();
                     } catch (error) {
                         console.error("Failed to fetch data:", error);
@@ -76,17 +81,42 @@ const model = genAI.getGenerativeModel({
                 Your mission is to ensure every piece of code follows high standards. Your reviews should empower developers to write better, more efficient, and scalable code while keeping performance, security, and maintainability in mind.
 
                 Would you like any adjustments based on your specific needs? 🚀 
-    `
-});
-
+    `;
 
 async function generateContent(prompt) {
-    const result = await model.generateContent(prompt);
+    const apiKey = process.env.GOOGLE_GEMINI_KEY || process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+        throw new Error(
+            "Gemini API key is missing. Please set GOOGLE_GEMINI_KEY or GEMINI_API_KEY in your backend/.env file."
+        );
+    }
 
-    console.log(result.response.text())
+    const preferredModel = process.env.GEMINI_MODEL || "gemini-3.5-flash";
+    const modelsToTry = [
+        preferredModel,
+        "gemini-3.5-flash",
+        "gemini-3.6-flash",
+        "gemini-3.8-flash",
+    ].filter((m, idx, arr) => Boolean(m) && arr.indexOf(m) === idx);
 
-    return result.response.text();
+    const genAI = new GoogleGenerativeAI(apiKey);
+    let lastError = null;
 
+    for (const modelName of modelsToTry) {
+        try {
+            const model = genAI.getGenerativeModel({
+                model: modelName,
+                systemInstruction,
+            });
+            const result = await model.generateContent(prompt);
+            return result.response.text();
+        } catch (err) {
+            lastError = err;
+            console.warn(`[CodeLens] Model "${modelName}" failed: ${err.message}. Trying fallback model...`);
+        }
+    }
+
+    throw lastError || new Error("Failed to generate code review with available models.");
 }
 
-module.exports = generateContent    
+module.exports = generateContent;
